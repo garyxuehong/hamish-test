@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAMISH ASCII Art</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: monospace;
+        }
+        
+        .rainbow-border {
+            padding: 20px;
+            border: 8px solid;
+            border-image: linear-gradient(45deg, 
+                red, orange, yellow, green, blue, indigo, violet, red) 1;
+            background-color: #111;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        .ascii-art {
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.2;
+            white-space: pre;
+            text-align: center;
+        }
+        
+        @keyframes rainbow {
+            0% { border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet, red) 1; }
+            14% { border-image: linear-gradient(45deg, orange, yellow, green, blue, indigo, violet, red, orange) 1; }
+            28% { border-image: linear-gradient(45deg, yellow, green, blue, indigo, violet, red, orange, yellow) 1; }
+            42% { border-image: linear-gradient(45deg, green, blue, indigo, violet, red, orange, yellow, green) 1; }
+            57% { border-image: linear-gradient(45deg, blue, indigo, violet, red, orange, yellow, green, blue) 1; }
+            71% { border-image: linear-gradient(45deg, indigo, violet, red, orange, yellow, green, blue, indigo) 1; }
+            85% { border-image: linear-gradient(45deg, violet, red, orange, yellow, green, blue, indigo, violet) 1; }
+            100% { border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet, red) 1; }
+        }
+        
+        .rainbow-border {
+            animation: rainbow 3s linear infinite;
+        }
+        
+        .bounce-button {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .bounce-button:hover {
+            transform: translateX(-50%) scale(1.05);
+        }
+        
+        .basketball {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            background: #ff8c00;
+            border-radius: 50%;
+            border: 3px solid #000;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .basketball::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #000;
+            transform: translateY(-50%);
+        }
+        
+        .basketball::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #000;
+            transform: translateX(-50%);
+        }
+        
+        .bounce-animation {
+            animation: physics-bounce 6.32s linear forwards;
+        }
+        
+        @keyframes physics-bounce {
+            /* Physics calculations:
+               - Initial height: 400px
+               - Coefficient of restitution (e): 0.8
+               - Gravity: 9.8 m/s² (scaled to pixels)
+               - Time for each bounce calculated using: t = 2 * sqrt(2h/g)
+               - Height after bounce: h_new = e² * h_old
+            */
+            
+            /* Bounce 1: h=400px, t=0.90s (0% to 14.2%) */
+            0% {
+                top: calc(100vh - 520px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            7.1% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.75) scaleX(1.3);
+            }
+            14.2% {
+                top: calc(100vh - 376px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 2: h=256px, t=0.72s (14.2% to 25.6%) */
+            19.9% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.8) scaleX(1.25);
+            }
+            25.6% {
+                top: calc(100vh - 284px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 3: h=164px, t=0.58s (25.6% to 34.8%) */
+            30.2% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.83) scaleX(1.2);
+            }
+            34.8% {
+                top: calc(100vh - 231px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 4: h=105px, t=0.46s (34.8% to 42.1%) */
+            38.45% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.86) scaleX(1.16);
+            }
+            42.1% {
+                top: calc(100vh - 189px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 5: h=67px, t=0.37s (42.1% to 47.9%) */
+            45% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.88) scaleX(1.14);
+            }
+            47.9% {
+                top: calc(100vh - 161px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 6: h=43px, t=0.30s (47.9% to 52.6%) */
+            50.25% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.9) scaleX(1.11);
+            }
+            52.6% {
+                top: calc(100vh - 143px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 7: h=28px, t=0.24s (52.6% to 56.4%) */
+            54.5% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.92) scaleX(1.09);
+            }
+            56.4% {
+                top: calc(100vh - 133px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 8: h=18px, t=0.19s (56.4% to 59.4%) */
+            57.9% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.94) scaleX(1.06);
+            }
+            59.4% {
+                top: calc(100vh - 127px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 9: h=11px, t=0.15s (59.4% to 61.8%) */
+            60.6% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.96) scaleX(1.04);
+            }
+            61.8% {
+                top: calc(100vh - 124px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Bounce 10: h=7px, t=0.12s (61.8% to 63.7%) */
+            62.75% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.97) scaleX(1.03);
+            }
+            63.7% {
+                top: calc(100vh - 122px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            
+            /* Final settling with micro bounces */
+            64.5% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.98) scaleX(1.02);
+            }
+            65.2% {
+                top: calc(100vh - 121px);
+                transform: translateX(-50%) scaleY(1);
+            }
+            65.8% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(0.99) scaleX(1.01);
+            }
+            100% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) scaleY(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rainbow-border">
+        <div class="ascii-art">██   ██  █████  ███    ███ ██ ███████ ██   ██ 
+██   ██ ██   ██ ████  ████ ██ ██      ██   ██ 
+███████ ███████ ██ ████ ██ ██ ███████ ███████ 
+██   ██ ██   ██ ██  ██  ██ ██      ██ ██   ██ 
+██   ██ ██   ██ ██      ██ ██ ███████ ██   ██</div>
+    </div>
+    
+    <div class="basketball" id="basketball"></div>
+    <button class="bounce-button" onclick="toggleBounce()">Bounce</button>
+    
+    <script>
+        let isBouncingActive = false;
+        let ballPosition = 50; // percentage from left
+        const basketball = document.getElementById('basketball');
+        
+        function toggleBounce() {
+            if (isBouncingActive) {
+                basketball.style.display = 'none';
+                basketball.classList.remove('bounce-animation');
+                isBouncingActive = false;
+            } else {
+                basketball.style.display = 'block';
+                ballPosition = 50; // Reset to center
+                updateBallPosition();
+                basketball.classList.add('bounce-animation');
+                isBouncingActive = true;
+            }
+        }
+        
+        function updateBallPosition() {
+            basketball.style.left = ballPosition + '%';
+            basketball.style.transform = 'translateX(-50%)';
+        }
+        
+        // Handle keyboard input
+        document.addEventListener('keydown', function(event) {
+            if (!isBouncingActive) return; // Only move when bouncing
+            
+            const moveSpeed = 2; // percentage points per keypress
+            
+            switch(event.key) {
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    ballPosition = Math.max(5, ballPosition - moveSpeed); // Don't go too far left
+                    updateBallPosition();
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    ballPosition = Math.min(95, ballPosition + moveSpeed); // Don't go too far right
+                    updateBallPosition();
+                    break;
+            }
+        });
+        
+        // Also handle keydown for continuous movement
+        let leftPressed = false;
+        let rightPressed = false;
+        let moveInterval;
+        
+        document.addEventListener('keydown', function(event) {
+            if (!isBouncingActive) return;
+            
+            if (event.key === 'ArrowLeft' && !leftPressed) {
+                leftPressed = true;
+                startContinuousMovement();
+            } else if (event.key === 'ArrowRight' && !rightPressed) {
+                rightPressed = true;
+                startContinuousMovement();
+            }
+        });
+        
+        document.addEventListener('keyup', function(event) {
+            if (event.key === 'ArrowLeft') {
+                leftPressed = false;
+            } else if (event.key === 'ArrowRight') {
+                rightPressed = false;
+            }
+            
+            if (!leftPressed && !rightPressed) {
+                clearInterval(moveInterval);
+            }
+        });
+        
+        function startContinuousMovement() {
+            clearInterval(moveInterval);
+            moveInterval = setInterval(function() {
+                if (!isBouncingActive) {
+                    clearInterval(moveInterval);
+                    return;
+                }
+                
+                const moveSpeed = 1; // smoother continuous movement
+                
+                if (leftPressed) {
+                    ballPosition = Math.max(5, ballPosition - moveSpeed);
+                    updateBallPosition();
+                }
+                if (rightPressed) {
+                    ballPosition = Math.min(95, ballPosition + moveSpeed);
+                    updateBallPosition();
+                }
+            }, 16); // ~60fps
+        }
+    </script>
+</body>
+</html>
