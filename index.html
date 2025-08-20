@@ -255,6 +255,8 @@
     <script>
         let isBouncingActive = false;
         let ballPosition = 50; // percentage from left
+        let tiltSupported = false;
+        let lastGamma = 0;
         const basketball = document.getElementById('basketball');
         
         function toggleBounce() {
@@ -268,6 +270,55 @@
                 updateBallPosition();
                 basketball.classList.add('bounce-animation');
                 isBouncingActive = true;
+                
+                // Request device orientation permission for iOS 13+
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response == 'granted') {
+                                enableTiltControl();
+                            } else {
+                                console.log('Device orientation permission denied');
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    // For non-iOS devices or older iOS versions
+                    enableTiltControl();
+                }
+            }
+        }
+        
+        function enableTiltControl() {
+            tiltSupported = true;
+            window.addEventListener('deviceorientation', handleTilt);
+        }
+        
+        function handleTilt(event) {
+            if (!isBouncingActive || !tiltSupported) return;
+            
+            // gamma is the left-to-right tilt in degrees (-90 to 90)
+            // Positive gamma = tilted to the right
+            // Negative gamma = tilted to the left
+            const gamma = event.gamma;
+            
+            if (gamma !== null && gamma !== undefined) {
+                // Sensitivity adjustment - limit tilt range to -30 to +30 degrees for better control
+                const maxTilt = 30;
+                const clampedGamma = Math.max(-maxTilt, Math.min(maxTilt, gamma));
+                
+                // Convert tilt to ball position (0% to 100%)
+                // -30 degrees = 0% (far left), 0 degrees = 50% (center), +30 degrees = 100% (far right)
+                const tiltPosition = 50 + (clampedGamma / maxTilt) * 45; // 45% range on each side
+                
+                // Smooth the movement to avoid jittery motion
+                const smoothingFactor = 0.1;
+                ballPosition = ballPosition * (1 - smoothingFactor) + tiltPosition * smoothingFactor;
+                
+                // Apply boundaries
+                ballPosition = Math.max(5, Math.min(95, ballPosition));
+                
+                updateBallPosition();
             }
         }
         
@@ -276,7 +327,7 @@
             basketball.style.transform = 'translateX(-50%)';
         }
         
-        // Handle keyboard input
+        // Handle keyboard input (fallback for desktop)
         document.addEventListener('keydown', function(event) {
             if (!isBouncingActive) return; // Only move when bouncing
             
@@ -296,7 +347,7 @@
             }
         });
         
-        // Also handle keydown for continuous movement
+        // Also handle keydown for continuous movement (desktop fallback)
         let leftPressed = false;
         let rightPressed = false;
         let moveInterval;
@@ -345,6 +396,14 @@
                 }
             }, 16); // ~60fps
         }
+        
+        // Add visual indicator for tilt support
+        window.addEventListener('load', function() {
+            if (typeof DeviceOrientationEvent !== 'undefined') {
+                const button = document.querySelector('.bounce-button');
+                button.title = 'Click to bounce! Tilt device left/right to move ball on mobile devices.';
+            }
+        });
     </script>
 </body>
 </html>
